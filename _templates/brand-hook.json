@@ -1,0 +1,5 @@
+{
+  "_comment": "Hook-card DELTAS over brand.json: thumbnail-scale type for the cold open. Pass base first: --brand brand.json --brand brand-hook.json. Use with cardanim.py --pre/--marks/--title-color.",
+  "title_size": 150,
+  "subtitle_size": 58
+}

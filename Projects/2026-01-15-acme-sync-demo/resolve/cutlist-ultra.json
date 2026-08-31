@@ -1,0 +1,49 @@
+{
+ "name": "2026-01-15-acme-sync-demo-ultra",
+ "spine": [
+  {
+   "src": "footage/demo.mp4",
+   "in": 0.0,
+   "out": 5.95
+  },
+  {
+   "src": "footage/demo.mp4",
+   "in": 7.29,
+   "out": 8.65
+  },
+  {
+   "src": "footage/demo.mp4",
+   "in": 13.73,
+   "out": 15.86
+  },
+  {
+   "src": "footage/demo.mp4",
+   "in": 16.0,
+   "out": 20.65
+  },
+  {
+   "src": "footage/demo.mp4",
+   "in": 20.81,
+   "out": 25.98
+  }
+ ],
+ "markers": [
+  {
+   "at": 0,
+   "name": "Intro"
+  },
+  {
+   "at": 5.95,
+   "name": "Set up the schema"
+  },
+  {
+   "at": 12.56,
+   "name": "Watch a record sync"
+  },
+  {
+   "at": 1,
+   "name": "How Acme Sync moves records between two apps",
+   "note": "A 30-second tour of Acme Sync: map a schema once, then watch a webhook land a record in Postgres in about a second."
+  }
+ ]
+}

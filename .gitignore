@@ -1,0 +1,22 @@
+# Media stays on disk, not in git (the filesystem is the state for footage;
+# git tracks the small stuff: scripts, cutlists, transcripts, cards, docs)
+*.mov
+*.mp4
+*.m4a
+*.wav
+*.aif
+*.aiff
+
+# OS / Python noise
+.DS_Store
+__pycache__/
+
+# Caption-state PNG dirs are render intermediates: delete once the
+# export exists (SKILL step 9); never commit them
+*-states/
+
+# Retired projects
+_archive/
+
+# Local mlx-whisper venv (see README one-time setup)
+.venv

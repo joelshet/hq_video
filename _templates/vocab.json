@@ -1,0 +1,35 @@
+{
+ "_comment": "Shared vocabulary for every video. 'prompt_terms' seeds Whisper's initial prompt (it biases spelling AND anchors proper casing/punctuation for the whole transcript). 'corrections' are regex -> replacement, applied case-sensitively after transcription, to both segment text and word timestamps. A project can override/extend either by adding its own vocab.json in the project folder. The Acme Sync entries are placeholders — replace them with your product names; the rest are common tech terms Whisper garbles.",
+ "prompt_style": "This is a product demo recorded by the Acme Sync team.",
+ "prompt_terms": [
+  "Acme Sync",
+  "Claude",
+  "Claude Code",
+  "MCP",
+  "Postgres",
+  "OAuth",
+  "API",
+  "CMS",
+  "CRM",
+  "SEO",
+  "webhook",
+  "schema",
+  "upsert",
+  "backfill",
+  "two-way sync",
+  "field mapping",
+  "rate limit"
+ ],
+ "corrections": {
+  "\\b[Cc]lo(?:u|)d ?[Cc]ode\\b": "Claude Code",
+  "\\b[Cc]laud ?[Cc]ode\\b": "Claude Code",
+  "\\b[Gg]oogle [Cc]lo(?:u|)d\\b": "Google Cloud",
+  "(?<![Gg]oogle )(?<![Tt]he )(?<!\\.)\\b[Cc]lo(?:u|)d\\b(?! (?:storage|provider|native|hosting|console|project|run|region))": "Claude",
+  "\\b[Aa]cme [Ss]ink\\b": "Acme Sync",
+  "\\b[Aa]cme [Ss]inc\\b": "Acme Sync",
+  "\\b[Pp]ost ?[Gg]res\\b": "Postgres",
+  "\\b[Uu]p ?cert\\b": "upsert",
+  "\\b[Ww]eb ?hook\\b": "webhook",
+  "\\bo ?[Aa]uth\\b": "OAuth"
+ }
+}

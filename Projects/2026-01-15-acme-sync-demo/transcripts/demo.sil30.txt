@@ -1,0 +1,62 @@
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '~/hq_video/Projects/2026-01-15-acme-sync-demo/footage/demo.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Duration: 00:00:27.27, start: 0.000000, bitrate: 6509 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 6402 kb/s, 30 fps, 30 tbr, 15360 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc62.11.100 libx264
+  Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 22050 Hz, mono, fltp, 105 kb/s (default)
+    Metadata:
+      handler_name    : SoundHandler
+      vendor_id       : [0][0][0][0]
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> wrapped_avframe (native))
+  Stream #0:1 -> #0:1 (aac (native) -> pcm_s16le (native))
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf62.3.100
+  Stream #0:0(und): Video: wrapped_avframe, yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 30 fps, 30 tbn (default)
+    Metadata:
+      encoder         : Lavc62.11.100 wrapped_avframe
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+  Stream #0:1(und): Audio: pcm_s16le, 22050 Hz, mono, s16, 352 kb/s (default)
+    Metadata:
+      encoder         : Lavc62.11.100 pcm_s16le
+      handler_name    : SoundHandler
+      vendor_id       : [0][0][0][0]
+[silencedetect @ 0x10c605ad0] silence_start: 0.830658
+[silencedetect @ 0x10c605ad0] silence_end: 1.100317 | silence_duration: 0.26966
+[silencedetect @ 0x10c605ad0] silence_start: 5.919501
+[silencedetect @ 0x10c605ad0] silence_end: 6.185578 | silence_duration: 0.266077
+[silencedetect @ 0x10c605ad0] silence_start: 6.602494
+[silencedetect @ 0x10c605ad0] silence_end: 6.826621 | silence_duration: 0.224127
+[silencedetect @ 0x10c605ad0] silence_start: 7.111293
+[silencedetect @ 0x10c605ad0] silence_end: 7.345624 | silence_duration: 0.234331
+[silencedetect @ 0x10c605ad0] silence_start: 8.614875
+[silencedetect @ 0x10c605ad0] silence_end: 8.851383 | silence_duration: 0.236508
+[silencedetect @ 0x10c605ad0] silence_start: 10.689116
+[silencedetect @ 0x10c605ad0] silence_end: 10.917188 | silence_duration: 0.228073
+[silencedetect @ 0x10c605ad0] silence_start: 13.734875
+[silencedetect @ 0x10c605ad0] silence_end: 13.989705 | silence_duration: 0.25483
+[silencedetect @ 0x10c605ad0] silence_start: 15.827438
+[silencedetect @ 0x10c605ad0] silence_end: 16.05551 | silence_duration: 0.228073
+[silencedetect @ 0x10c605ad0] silence_start: 18.934512
+[silencedetect @ 0x10c605ad0] silence_end: 19.201451 | silence_duration: 0.266939
+[silencedetect @ 0x10c605ad0] silence_start: 20.619546
+[silencedetect @ 0x10c605ad0] silence_end: 20.874921 | silence_duration: 0.255374
+[silencedetect @ 0x10c605ad0] silence_start: 23.31034
+[silencedetect @ 0x10c605ad0] silence_end: 23.595193 | silence_duration: 0.284853
+[silencedetect @ 0x10c605ad0] silence_start: 24.614694
+[silencedetect @ 0x10c605ad0] silence_end: 24.909569 | silence_duration: 0.294875
+[out#0/null @ 0x11c6040c0] video:332KiB audio:1116KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=  818 fps=0.0 q=-0.0 Lsize=N/A time=00:00:25.91 bitrate=N/A speed=65.4x elapsed=0:00:00.39    

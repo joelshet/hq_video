@@ -1,0 +1,47 @@
+1
+00:00:00,000 --> 00:00:00,700
+Hey everyone.
+
+2
+00:00:00,960 --> 00:00:03,300
+Today I'm going to show you how Acme Sync
+
+3
+00:00:03,300 --> 00:00:05,820
+moves records between
+two apps in real time.
+
+4
+00:00:06,080 --> 00:00:08,500
+So, um, let's start with the schema.
+
+5
+00:00:08,820 --> 00:00:10,560
+Every table gets a field mapping,
+
+6
+00:00:10,780 --> 00:00:13,620
+and the sync engine handles
+the upsert on both sides.
+
+7
+00:00:13,880 --> 00:00:15,680
+Every table gets a field mapping,
+
+8
+00:00:15,900 --> 00:00:18,840
+and the sync engine watches
+for changes on both sides.
+
+9
+00:00:19,120 --> 00:00:23,180
+Once the webhook fires, the record
+lands in Postgres in about a second.
+
+10
+00:00:23,500 --> 00:00:24,460
+That's the whole demo.
+
+11
+00:00:24,460 --> 00:00:25,580
+Thanks for watching.

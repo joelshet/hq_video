@@ -1,0 +1,17 @@
+TITLE A
+How Acme Sync moves records between two apps
+
+TITLE B
+Acme Sync demo: a record syncs in about a second
+
+DESCRIPTION
+A 30-second tour of Acme Sync: map a schema once, then watch a webhook
+land a record in Postgres in about a second.
+
+TAGS
+acme sync, two-way sync, postgres, webhook, field mapping
+
+THUMBS
+A: title-card style — flat brand panel, two product marks, "Sync to /
+   Postgres" with Postgres dominant in its color
+B: the same stack with a face frame as a full-height right panel

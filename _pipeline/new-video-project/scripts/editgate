@@ -1,0 +1,139 @@
+#!/bin/bash
+# Gate a cut list on its audio before anything renders or imports.
+#
+#   editgate PROJECT_DIR [CUTLIST] [--allow-src T]...
+#
+# Composes the small tools; each check prints its verdict, mechanical
+# failures exit nonzero. Residual silences have two bands, calibrated
+# against shipped finals (2026-08-10: non-hold residuals reach 0.50s,
+# never more):
+#   > 0.55s  FAIL, unless within 0.8s of an --allow-src time (a
+#            snippet-verified drawled word running under the -35dB
+#            floor: un-cuttable by the onset rule, listed by the caller)
+#   0.35-0.55s  JUDGE: printed, not failed
+# The re-transcription diff is likewise printed for JUDGMENT: Whisper
+# mishears fast speech, so classify each block (noise vs clipped word)
+# and snippet-check suspects before believing them.
+#
+#   1. cut2wav        assemble the edit's audio (~80s)
+#   2. duration       wav length vs cut list sum (0.5s tolerance)
+#   3. residuals      silencedetect -35dB, two bands as above; the final
+#                     2.5s (the intentional hold) is exempt
+#   4. transcribe     mlx-whisper full pass -> diff blocks vs words.json
+#   5. fcpxml         every resolve/*.fcpxml parses
+set -uo pipefail
+SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
+VENV_PY="$(cd "$SCRIPTS/../../.." && pwd)/.venv/bin/python"
+[ -x "$VENV_PY" ] || VENV_PY=python3
+P="$1"; shift
+CUTLIST="cutlist-ultra.json"
+[ $# -gt 0 ] && [ "${1#--}" = "$1" ] && { CUTLIST="$1"; shift; }
+ALLOW=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --allow-src) ALLOW+=("$2"); shift 2;;
+    *) echo "editgate: unknown arg $1" >&2; exit 2;;
+  esac
+done
+WAV=$(mktemp -t editgate).wav
+FAIL=0
+
+python3 "$SCRIPTS/cut2wav.py" --media-root "$P" -o "$WAV" < "$P/resolve/$CUTLIST" || exit 1
+
+WANT=$(python3 -c "import json; c=json.load(open('$P/resolve/$CUTLIST')); print(f\"{sum(s['out']-s['in'] for s in c['spine'] if 'in' in s):.2f}\")")
+GOT=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$WAV")
+python3 -c "import sys; sys.exit(0 if abs($GOT-$WANT)<0.5 else 1)" \
+  && echo "PASS duration: ${GOT}s vs ${WANT}s" \
+  || { echo "FAIL duration: ${GOT}s vs ${WANT}s"; FAIL=1; }
+
+# The silence map goes through a FILE and its path through argv. Never
+# pipe into `python3 - <<EOF`: the heredoc replaces the pipe as stdin, so
+# the script reads EMPTY input (this made the residual gate a no-op from
+# the tool's creation until 2026-08-12) and the abandoned writer dies of
+# SIGPIPE (exit 141), poisoning $? under pipefail.
+SILMAP=$(mktemp -t editgate-sil)
+ffmpeg -hide_banner -i "$WAV" -af silencedetect=n=-35dB:d=0.35 -f null - 2>"$SILMAP"
+python3 - "$P/resolve/$CUTLIST" "$GOT" "$SILMAP" "${ALLOW[@]:-}" <<'EOF'
+import json, re, sys
+from pathlib import Path
+cutf, end, silmap = sys.argv[1], float(sys.argv[2]), sys.argv[3]
+allow = [float(a) for a in sys.argv[4:] if a]
+segs = [(s["src"], s["in"], s["out"])
+        for s in json.load(open(cutf))["spine"] if "in" in s]
+def to_src(t):
+    acc = 0.0
+    for src, a, b in segs:
+        if t < acc + (b - a):
+            return Path(src).stem, a + (t - acc)
+        acc += b - a
+    return None, None
+fail = 0
+printed = 0
+lines = open(silmap).read()
+for ss, se in re.findall(r"silence_start: ([-\d.]+)\s*\n.*?silence_end: ([\d.]+)", lines):
+    ss, se = float(ss), float(se)
+    d = se - ss
+    if d < 0.35 or ss > end - 2.5:
+        continue
+    clip, src = to_src(ss + d / 2)
+    tag = (f"{d:.2f}s at tl {ss:.1f} ({clip} @ {src:.1f})" if clip
+           else f"{d:.2f}s at tl {ss:.1f}")
+    if d > 0.55:
+        if src is not None and any(abs(src - a) < 0.8 for a in allow):
+            print(f"ALLOW residual {tag} (verified drawl)")
+        else:
+            print(f"FAIL residual {tag}")
+            fail = 1
+    else:
+        print(f"JUDGE residual {tag}")
+    printed += 1
+if not printed:
+    print("PASS residuals: none >= 0.35s")
+sys.exit(fail)
+EOF
+[ $? -ne 0 ] && FAIL=1
+
+# Expected words follow the SPINE: each segment contributes its own clip's
+# words.json (transcripts/<src stem>.words.json), in playback order — a
+# multi-clip cut list diffs against every clip it pulls from.
+"$VENV_PY" - "$WAV" "$P" "$P/resolve/$CUTLIST" <<'EOF'
+import difflib, json, re, sys
+from pathlib import Path
+import mlx_whisper
+wav, proj, cutf = sys.argv[1:4]
+got = mlx_whisper.transcribe(wav, language="en")["text"]
+cut = json.load(open(cutf))
+cache = {}
+def words_for(src):
+    stem = Path(src).stem
+    if stem not in cache:
+        cache[stem] = json.load(open(
+            Path(proj) / "transcripts" / f"{stem}.words.json"))["words"]
+    return cache[stem]
+exp_tokens = []
+for s in cut["spine"]:
+    if "in" not in s:
+        continue
+    a, b = s["in"], s["out"]
+    exp_tokens += [w["word"] for w in words_for(s["src"])
+                   if a - 0.15 <= (w["start"] + w["end"]) / 2 <= b + 0.15]
+norm = lambda t: [re.sub(r"[^a-z0-9']", "", w.lower()) for w in t.split()
+                  if re.sub(r"[^a-z0-9']", "", w.lower())]
+exp = norm(" ".join(exp_tokens))
+sm = difflib.SequenceMatcher(a=exp, b=norm(got), autojunk=False)
+blocks = [op for op in sm.get_opcodes() if op[0] != "equal"]
+print(f"JUDGE transcription: ratio {sm.ratio():.3f}, {len(blocks)} diff blocks")
+g = norm(got)
+for tag, i1, i2, j1, j2 in blocks:
+    if tag in ("delete", "replace"):
+        print(f"  {tag}: exp {exp[max(0,i1-3):i2+3]} | heard {g[max(0,j1-3):j2+3]}")
+EOF
+
+for F in "$P"/resolve/*.fcpxml; do
+  python3 -c "import xml.etree.ElementTree as ET; ET.parse('$F')" \
+    || { echo "FAIL parse: $F"; FAIL=1; }
+done
+[ "$FAIL" -eq 0 ] && echo "PASS fcpxml: all parse"
+
+rm -f "$WAV" "$SILMAP"
+exit $FAIL

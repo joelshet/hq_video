@@ -1,0 +1,32 @@
+{
+  "_comment": "Placeholder brand tokens — swap these for your own site's design tokens. Colors are RGBA arrays. panel = the card background, border = its outline, accent/eyebrow = the highlight color. Fonts are tried in order, so list your brand font first and keep the system fallbacks. 'wordmark' is a PNG path relative to this file; add one (e.g. assets/wordmark.png) and every full-screen card gets it at the foot.",
+
+  "canvas": [1920, 1080],
+  "panel_color": [20, 22, 26, 247],
+  "panel_border_color": [58, 63, 72, 255],
+  "text_color": [255, 255, 255, 255],
+  "subtitle_color": [190, 196, 205, 255],
+  "accent_color": [235, 184, 75, 255],
+  "eyebrow_color": [235, 184, 75, 255],
+  "title_size": 92,
+  "subtitle_size": 42,
+  "eyebrow_size": 26,
+  "title_tracking": -0.04,
+  "eyebrow_tracking": 0.10,
+  "corner_radius": 28,
+  "fonts": [
+    "~/Library/Fonts/Geist-SemiBold.ttf",
+    "/System/Library/Fonts/Supplemental/Helvetica Neue Bold.ttf",
+    "/Library/Fonts/Arial Bold.ttf"
+  ],
+  "fonts_regular": [
+    "~/Library/Fonts/Geist-Regular.ttf",
+    "/System/Library/Fonts/Helvetica.ttc",
+    "/Library/Fonts/Arial.ttf"
+  ],
+  "fonts_mono": [
+    "~/Library/Fonts/GeistMono-Medium.ttf",
+    "/System/Library/Fonts/Menlo.ttc",
+    "/System/Library/Fonts/Monaco.ttf"
+  ]
+}
